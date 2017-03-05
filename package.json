@@ -1,0 +1,15 @@
+{
+  "name": "fin-emphasis",
+  "version": "1.0.0",
+  "description": "Emphasis detection for FIN NLP",
+  "main": "dist/index.js",
+  "dependencies": {
+    "finnlp": "^1.0.12"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alex Corvi",
+  "license": "MIT"
+}
