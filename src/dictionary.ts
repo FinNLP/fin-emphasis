@@ -167,5 +167,6 @@ export const adverbsOfEmphasis:{
 	"wonderfully":2,
 	"wisely":2,
 	"bitterly":2.3,
-	"unbearably":2.4
+	"unbearably":2.4,
+	"demonstrably":2.5,
 };

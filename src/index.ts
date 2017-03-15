@@ -1,59 +1,54 @@
 import * as dict from "./dictionary";
-import {Fin} from "finnlp";
+import * as Fin from "finnlp";
 
-/**
- * Expand namespace
-**/
-export namespace Fin {
-	export interface FinReturn {
-		empshasis:()=>number[][];
+declare module "finnlp" {
+	export interface Run {
+		emphasis:(this:Fin.Run)=>number[][];
 	}
 }
 
-/**
- * Calcualte empshasis
-**/
-export function empshasis(input:Fin.FinReturn){
-	const calculateEmphasis = function () {
-		const empshasisPoints:number[][] = [];
-		// initialize all with false
-		input.tokens.forEach((sentenceTokens,sentenceIndex)=>{
-			empshasisPoints[sentenceIndex] = [];
-			sentenceTokens.forEach((token,tokenIndex)=>{
-				empshasisPoints[sentenceIndex][tokenIndex] = 1;
-			});
-		});
-		// RBS & JJS
-		input.tokens.forEach((sentence,sentenceIndex)=>{
-			sentence.forEach((tag,tagIndex)=>{
-				if(tag === "JJS") {
-					const targetIndex = findNearestParent(sentenceIndex,tagIndex,"N");
-					empshasisPoints[sentenceIndex][targetIndex] = empshasisPoints[sentenceIndex][targetIndex] + 1;
-				}
-				else if(tag === "RBS") {
-					const targetIndex = findNearestParent(sentenceIndex,tagIndex,"V");
-					empshasisPoints[sentenceIndex][targetIndex] = empshasisPoints[sentenceIndex][targetIndex] + 1;
-				}
-			});
-		});
-		// Adverbs of emphasis
-		input.tokens.forEach((sentence,sentenceIndex)=>{
-			sentence.forEach((token,tokenIndex)=>{
-				const score = dict.adverbsOfEmphasis[token.toLowerCase()];
-				if(score) {
-					const targetIndex = findNearestParent(sentenceIndex,tokenIndex,"V");
-					empshasisPoints[sentenceIndex][targetIndex] = empshasisPoints[sentenceIndex][targetIndex] + score;
-				}
-			});
-		});
-		return empshasisPoints;
-	};
-	return Object.assign(input,{negation:calculateEmphasis});
+Fin.Run.prototype.emphasis = function(){
+	const result:number[][] = [];
 
-	function findNearestParent(sentenceIndex:number,tokenIndex:number,tag:string):number{
-		const parent = input.deps[sentenceIndex][tokenIndex].parent;
-		if(parent === -1) return tokenIndex;
-		else if(input.tags[sentenceIndex][parent].charAt(0) === tag) return parent;
-		else return findNearestParent(sentenceIndex,parent,tag);
-	}
+	// initialize all with false
+	this.sentences.forEach((sentence,sentenceIndex)=>{
+		result[sentenceIndex] = [];
+		sentence.tokens.forEach((token,tokenIndex)=>{
+			result[sentenceIndex][tokenIndex] = 1;
+		});
+	});
+
+	this.sentences.forEach((sentence,sentenceIndex)=>{
+
+		// 1. RBS & JJS
+		const tags = sentence.tags;
+		tags.forEach((tag,tagIndex)=>{
+			if(tag==="JJS")
+				result[sentenceIndex][tagIndex]++;
+			else if(tag==="RBS")
+				result[sentenceIndex][tagIndex]++;
+		});
+
+		// 2. Adverbs of emphasis
+		const tokens = sentence.tokens;
+		tokens.forEach((token,tokenIndex)=>{
+			const score = dict.adverbsOfEmphasis[token.toLowerCase()];
+			if(score) {
+				const nearestParent = findTarget(sentenceIndex,tokenIndex,this);
+				result[sentenceIndex][nearestParent] = result[sentenceIndex][nearestParent] + score;
+			}
+		});
+	});
+
+	return result;
+};
+
+function findTarget(sentenceIndex:number,tokenIndex:number,input:Fin.Run):number{
+	const possibleCloseNeighbors = ["N","J"];
+	const closeNeighbor = input.sentences[sentenceIndex].tags[tokenIndex+1];
+	const parent = input.sentences[sentenceIndex].deps[tokenIndex].parent;
+	
+	if(~possibleCloseNeighbors.indexOf(closeNeighbor.charAt(0))) return tokenIndex+1;
+	else if(parent === -1) return tokenIndex;
+	else return parent;
 }

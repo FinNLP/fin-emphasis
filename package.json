@@ -1,12 +1,13 @@
 {
   "name": "fin-emphasis",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Emphasis detection for FIN NLP",
   "main": "dist/index.js",
-  "dependencies": {
-    "finnlp": "^1.0.12"
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^7.0.8",
+    "finnlp": "^1.0.25"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
