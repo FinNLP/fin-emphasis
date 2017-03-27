@@ -2,14 +2,16 @@
   "name": "fin-emphasis",
   "version": "1.0.4",
   "description": "Emphasis detection for FIN NLP",
-  "main": "dist/index.js",
+  "main": "./dist/index.js",
+  "types":"./dist/index.d.ts",
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^7.0.8",
     "finnlp": "^1.0.25"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ts-node test/test.ts",
+    "prepublish": "ts-node test/test.ts && tsc"
   },
   "author": "Alex Corvi",
   "license": "MIT"
