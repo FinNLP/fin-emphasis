@@ -44,7 +44,7 @@ Fin.Run.prototype.emphasis = function(){
 };
 
 function findTarget(sentenceIndex:number,tokenIndex:number,input:Fin.Run):number{
-	const possibleCloseNeighbors = ["N","J"];
+	const possibleCloseNeighbors = ["N","J","C"];
 	const closestNeighbor = input.sentences[sentenceIndex].tags[tokenIndex+1];
 	const secondMostCloseNeighbor = input.sentences[sentenceIndex].tags[tokenIndex+2];
 	const parent = input.sentences[sentenceIndex].deps[tokenIndex].parent;

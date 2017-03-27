@@ -24,7 +24,7 @@ function assert (sentence:string, hasEmphasis:boolean, expectedIndex?:number){
 
 assert("That was extremely good.",true,3);
 assert("It's the longest yard in history",true,3);
-assert("I saw exactly 3 men going to the party.",true,5);
+assert("I saw exactly 3 men going to the party.",true,3);
 assert("it literally had been one of the craziest weeks I've ever had",true,3);
 assert("I honestly didn't want her to give her opinion",true,4);
 assert("That's demonstrably false accusation",true,3);
