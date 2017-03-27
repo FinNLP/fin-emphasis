@@ -31,7 +31,7 @@ console.log(result);
 
 The above example would give:
 
-```json
+```javascript
 [
     [
         0,
