@@ -1,6 +1,6 @@
 /**
  * 
- * Adverbs of empahsis
+ * Adverbs of emphasis
  * 
 **/
 export const adverbsOfEmphasis:{
