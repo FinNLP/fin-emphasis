@@ -45,10 +45,12 @@ Fin.Run.prototype.emphasis = function(){
 
 function findTarget(sentenceIndex:number,tokenIndex:number,input:Fin.Run):number{
 	const possibleCloseNeighbors = ["N","J"];
-	const closeNeighbor = input.sentences[sentenceIndex].tags[tokenIndex+1];
+	const closestNeighbor = input.sentences[sentenceIndex].tags[tokenIndex+1];
+	const secondMostCloseNeighbor = input.sentences[sentenceIndex].tags[tokenIndex+2];
 	const parent = input.sentences[sentenceIndex].deps[tokenIndex].parent;
 	
-	if(~possibleCloseNeighbors.indexOf(closeNeighbor.charAt(0))) return tokenIndex+1;
+	if(~possibleCloseNeighbors.indexOf(closestNeighbor.charAt(0))) return tokenIndex+1;
+	if(~possibleCloseNeighbors.indexOf(secondMostCloseNeighbor.charAt(0))) return tokenIndex+2;
 	else if(parent === -1) return tokenIndex;
 	else return parent;
 }
