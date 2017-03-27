@@ -15,7 +15,6 @@ function assert (sentence:string, hasEmphasis:boolean, expectedIndex?:number){
     }
     else if(expectedIndex !== undefined){
         const gotIndex = result[0].findIndex((x)=>x > 1);
-        const gotValue = result[0].find(x=>x>1);
         if(gotIndex !== expectedIndex) {
             error(`❌ Failed: for sentence ${sentence} we were expecting an emphasis at ${expectedIndex} and we got ${gotIndex}`);
         }
