@@ -34,7 +34,7 @@ Fin.Run.prototype.emphasis = function(){
 		tokens.forEach((token,tokenIndex)=>{
 			const score = dict.adverbsOfEmphasis[token.toLowerCase()];
 			if(score) {
-				const nearestParent = findTarget(sentenceIndex,tokenIndex,this);
+				const nearestParent = findTarget(tokenIndex,sentence);
 				result[sentenceIndex][nearestParent] = result[sentenceIndex][nearestParent] + score;
 			}
 		});
@@ -43,14 +43,27 @@ Fin.Run.prototype.emphasis = function(){
 	return result;
 };
 
-function findTarget(sentenceIndex:number,tokenIndex:number,input:Fin.Run):number{
-	const possibleCloseNeighbors = ["N","J","C"];
-	const closestNeighbor = input.sentences[sentenceIndex].tags[tokenIndex+1];
-	const secondMostCloseNeighbor = input.sentences[sentenceIndex].tags[tokenIndex+2];
-	const parent = input.sentences[sentenceIndex].deps[tokenIndex].parent;
-	
-	if(~possibleCloseNeighbors.indexOf(closestNeighbor.charAt(0))) return tokenIndex+1;
-	if(~possibleCloseNeighbors.indexOf(secondMostCloseNeighbor.charAt(0))) return tokenIndex+2;
+function nextTag(index:number,sentence:Fin.SentenceResult,test:RegExp,distance:number):number {
+	return sentence.tags.findIndex((tag,i)=>{
+		return i > index && (i - index) < distance + 1 && test.test(tag);
+	});
+}
+
+function findTarget(tokenIndex:number,sentence:Fin.SentenceResult):number {
+
+	const parent = sentence.deps[tokenIndex].parent;
+	const closestNeighbor = [
+		nextTag(tokenIndex,sentence,/N/,1),
+		nextTag(tokenIndex,sentence,/C/,1),
+		nextTag(tokenIndex,sentence,/J/,1),
+		nextTag(tokenIndex,sentence,/N/,2),
+		nextTag(tokenIndex,sentence,/C/,2),
+		nextTag(tokenIndex,sentence,/J/,2),
+	]
+	.find(x=>x!==-1);
+
+	if(closestNeighbor !== undefined && closestNeighbor !== -1) return closestNeighbor;
 	else if(parent === -1) return tokenIndex;
 	else return parent;
+
 }

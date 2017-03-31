@@ -1,6 +1,6 @@
 {
   "name": "fin-emphasis",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Emphasis detection for FIN NLP",
   "main": "./dist/index.js",
   "types":"./dist/index.d.ts",
